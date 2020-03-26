@@ -1,5 +1,6 @@
 # asset-search
 Query Preservica v6 for assets using the search API
+You need a python 3 runtime to run the script.
 
 Generate a XLS report of all assets and folders in a Preservica system using the search API.
 
@@ -18,5 +19,5 @@ will write the output to report.csv
 
 `$./asset-search.py  test@test.com Eyhd87hfp6  TEN  eu --output assets.csv`
 
-will write the output to data.csv
+will write the output to assets.csv
 
