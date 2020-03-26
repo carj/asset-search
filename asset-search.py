@@ -41,10 +41,7 @@ def writeCSVRow(writer, m, identifier):
     else:
         writer.writerow([identifier[7:], title, description, tag, parent_ref, "Asset", top_level_so])
     
-    
-    
-    writer.writerow([identifier[7:], title, description, tag, parent_ref, "Asset", top_level_so])
-            
+               
 def new_token(username, password, tenant, server):
     resp = requests.post(f'https://{server}.preservica.com/api/accesstoken/login?username={username}&password={password}&tenant={tenant}')
     if resp.status_code == 200:
