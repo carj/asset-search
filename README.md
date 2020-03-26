@@ -15,6 +15,8 @@ e.g.
 
 `$./asset-search.py  test@test.com Eyhd87hfp6  TEN  eu `
 
+will query the eu.preservica.com server for all assets which test@test.com has read metadata access.
+
 will write the output to report.csv
 
 `$./asset-search.py  test@test.com Eyhd87hfp6  TEN  eu --output assets.csv`
