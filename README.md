@@ -1,8 +1,11 @@
 # asset-search
+
+Generate a XLS report of all assets and folders in a Preservica system using the search API.
+
 Query Preservica v6 for assets using the search API
 You need a python 3 runtime to run the script.
 
-Generate a XLS report of all assets and folders in a Preservica system using the search API.
+
 
 `usage: asset-search.py [-h] [--output OUTPUT] username password tenant server`
 
