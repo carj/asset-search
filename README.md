@@ -1,6 +1,7 @@
 # asset-search
 
 Generate a XLS report of all assets and folders in a Preservica system using the search API.
+This is not actually a list of files, since an asset may contain multiple files in multiple representations. 
 
 Query Preservica v6 for assets using the search API
 You need a python 3 runtime to run the script.
