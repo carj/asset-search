@@ -26,3 +26,13 @@ will write the output to report.csv
 
 will write the output to assets.csv
 
+The CSV file has the following columns:
+
+- Identifier
+- Title
+- Description
+- Security Tag
+- Parent Collection Identifier
+- Type of object, e.g. Asset or Collection
+- The top level collection Identifier the object belongs to
+
