@@ -11,14 +11,16 @@ import argparse
 PAGE_SIZE = 100
 accessToken = ""
 
+folder_name_dict = {}
 
-def write_row(w, meta, identifier):
+
+def write_row(w, meta, identifier, token, username, password, tenant, prefix):
     title = ""
     description = ""
     tag = ""
     document_type = ""
-    parent_ref = ""
-    top_level_so = ""
+    parent_folder_ref = ""
+    root_folder_ref = ""
 
     for i in meta:
         j = dict(i.items())
@@ -31,14 +33,53 @@ def write_row(w, meta, identifier):
         if j['name'] == "xip.document_type":
             document_type = j['value']
         if j['name'] == "xip.parent_ref":
-            parent_ref = j['value']
+            parent_folder_ref = j['value']
         if j['name'] == "xip.top_level_so":
-            top_level_so = j['value'][0]
+            root_folder_ref = j['value'][0]
 
+    global folder_name_dict
+
+    parent_title = ""
+    if parent_folder_ref:
+        if parent_folder_ref in folder_name_dict:
+            parent_title = folder_name_dict[parent_folder_ref]
+        else:
+            parent_title = get_folder_name(token, username, password, tenant, prefix, parent_folder_ref)
+            folder_name_dict[parent_folder_ref] = parent_title
+
+    root_title = ""
+    if root_folder_ref:
+        if root_folder_ref in folder_name_dict:
+            root_title = folder_name_dict[root_folder_ref]
+        else:
+            root_title = get_folder_name(token, username, password, tenant, prefix, root_folder_ref)
+            folder_name_dict[root_folder_ref] = root_title
+
+    asset_type = "Asset"
     if document_type == "SO":
-        w.writerow([identifier[7:], title, description, tag, parent_ref, "Folder", top_level_so])
+        asset_type = "Folder"
+
+    w.writerow([identifier[7:], asset_type, title, description, tag, parent_folder_ref, parent_title,
+                root_folder_ref, root_title])
+
+
+def get_folder_name(token, username, password, tenant, prefix, folder_ref):
+    headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Preservica-Access-Token': token}
+    so_request = requests.get(f'https://{prefix}.preservica.com/api/entity/structural-objects/{folder_ref}',
+                              headers=headers)
+    if so_request.status_code == 401:
+        global accessToken
+        accessToken = new_token(username, password, tenant, prefix)
+        return get_folder_name(accessToken, username, password, tenant, prefix, folder_ref)
+    elif so_request.status_code == 200:
+        xml_response = str(so_request.content)
+        start = xml_response.find('<xip:Title>')
+        end = xml_response.find('</xip:Title>')
+        return xml_response[start + len('<xip:Title>'):end]
     else:
-        w.writerow([identifier[7:], title, description, tag, parent_ref, "Asset", top_level_so])
+        print(f"get_folder_name failed with error code: {so_request.status_code}")
+        print(so_request.request.url)
+        raise SystemExit
 
 
 def new_token(user, passw, ten, prefix):
@@ -47,7 +88,8 @@ def new_token(user, passw, ten, prefix):
     if resp.status_code == 200:
         return resp.json()['token']
     else:
-        print(resp.status_code)
+        print(f"new_token failed with error code: {resp.status_code}")
+        print(resp.request.url)
         raise SystemExit
 
 
@@ -66,7 +108,8 @@ def search(start_from, user, passw, ten, prefix, token, term):
         accessToken = new_token(user, passw, ten, prefix)
         return search(start_from, user, passw, ten, prefix, accessToken, term)
     else:
-        print(results.status_code)
+        print(f"search failed with error code: {results.status_code}")
+        print(results.request.url)
         raise SystemExit
 
 
@@ -112,13 +155,15 @@ def main():
     print(f"Total Number of Results Found (Assets + Folders):  {hits} ")
 
     writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC, delimiter=',')
-    writer.writerow(["identifier", "title", "description", "tag", "parent collection", "type", "root collection"])
+    writer.writerow(
+        ["Identifier", "Object Type", "Title", "Description", "Tag", "Parent collection id", "Parent collection title",
+         "Root collection id", "Root collection name"])
 
     total = 0
     while hits > total:
         index = 0
         for m in metadata:
-            write_row(writer, m, refs[index])
+            write_row(writer, m, refs[index], accessToken, username, password, tenant, prefix=server)
             index = index + 1
 
         total = total + index
