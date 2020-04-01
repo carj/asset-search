@@ -5,10 +5,7 @@
 Generate a XLS report of all assets and folders in a Preservica system using the search API.
 This is not actually a list of files, since an asset may contain multiple files in multiple representations. 
 
-
 You need a python 3 runtime to run the script.
-
-
 
 `usage: asset-search.py [-h] [--output OUTPUT] username password tenant server`
 
@@ -31,11 +28,11 @@ will write the output to assets.csv
 
 The CSV file has the following columns:
 
-- Identifier
+- Asset Identifier
 - Type of object, e.g. Asset or Collection
-- Title
-- Description
-- Security Tag
+- Asset Title
+- Asset Description
+- Asset Security Tag
 - Parent Collection Identifier
 - Parent Collection Name
 - Root Collection Identifier

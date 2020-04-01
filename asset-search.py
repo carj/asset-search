@@ -146,11 +146,9 @@ def main():
     accessToken = new_token(username, password, tenant, server)
 
     start = 0
-
     s = search(start, username, password, tenant, server, accessToken, query)
     metadata = s['value']['metadata']
     refs = list(s['value']['objectIds'])
-
     hits = int(s['value']['totalHits'])
     print(f"Total Number of Results Found (Assets + Folders):  {hits} ")
 
