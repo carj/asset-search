@@ -32,10 +32,22 @@ will write the output to assets.csv
 The CSV file has the following columns:
 
 - Identifier
+- Type of object, e.g. Asset or Collection
 - Title
 - Description
 - Security Tag
 - Parent Collection Identifier
-- Type of object, e.g. Asset or Collection
-- The top level collection Identifier the object belongs to
+- Parent Collection Name
+- Root Collection Identifier
+- Root Collection Name
+
+You can search for a particular phrase or word using the `--query` option
+
+`$./asset-search.py  test@test.com Eyhd87hfp6  TEN  eu --output assets.csv --query Trains`
+
+This will search Preservica for all assets or folders where the term "Trains" appears in the metadata or content
+
+
+
+
 
